@@ -1,26 +1,21 @@
 from room import Room
 from player import Player
+from item import Item
 
 
 # Declare all the rooms
 
 room = {
-    'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+    'outside':  Room("Bag-End Entrance, Bilbo's House",
+                     "The round door is cracked ajar to the north, sweet smells are wofting out"),
 
-    'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
-passages run north and east."""),
+    'foyer':    Room("Kitchen", """Dim light filters in from the south. The source of the savory smells come from a wooden table. Small passages run north and east."""),
 
-    'overlook': Room("Grand Overlook", """A steep cliff appears before you, falling
-into the darkness. Ahead to the north, a light flickers in
-the distance, but there is no way across the chasm."""),
+    'overlook': Room("Overlook", """ While under renovations, you can see out the side of the hill. Darkness falls below you, and you can see feint lights from the other dwellings in the distance. The small passageway you came from is the only way you can go."""),
 
-    'narrow':   Room("Narrow Passage", """The narrow passage bends here from west
-to north. The smell of gold permeates the air."""),
+    'narrow':   Room("Hallway", """The narrow passage bends here from west to north. The smell of gold permeates the air."""),
 
-    'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
-chamber! Sadly, it has already been completely emptied by
-earlier adventurers. The only exit is to the south."""),
+    'treasure': Room("Treasure Chamber", """You have entered into your treasure room. It is filled with items from your previous adventures. No other ways to continue through the house but back the way you came."""),
 }
 
 
@@ -37,14 +32,22 @@ room['treasure'].s_to = room['narrow']
 
 
 
-#
-# Main
-#
-
-# Make a new player object that is currently in the 'outside' room.
+# Declare all Players
 
 player = {
     "bilbo": Player("Bilbo Baggins", room['outside'])
+}
+
+# Declare all Items
+item = {
+    "dagger": Item("Sting", "A magical Elvish knife or dagger"),
+    "ring": Item("The One Ring", "The One Ring to rule them all, crafted by the Dark Lord Sauron in Mount Doom, found in Gollum's Cave"),
+    "food": Item("Hobbit Hash", "Breakfast meal containing: potatoes, leeks, spinach, and cheese"),
+    "drink": Item("Beer", "A favorite among Hobbits"),
+    "pouch": Item("A Gold Pouch", "Filled with Gold!"),
+    "book": Item("There and Back Again", "It's not finished yet!"),
+    "pipe": Item("Pipe", "Used for smoking Gilly-weed or Tobacco"),
+    "walking-stick": Item("Gandalf's Staff", "Gandalf must have left it here, or is close by...")
 }
 
 
@@ -88,7 +91,6 @@ while start == None or not start == 'start':
         print('')
         direction = ''
 else:
-
 
     ###### Navigation through rooms
     while player['bilbo']:
@@ -163,7 +165,7 @@ else:
         elif player["bilbo"].current_room.name == room['overlook'].name:
             if direction == "n":
                 print(' ')
-                print(f"{player['bilbo'].name} will fall off the cliff! \n")
+                print(f"{player['bilbo'].name} will fall down the hill! \n")
             elif direction == "s":
                 player['bilbo'].current_room = room['overlook'].s_to
                 print('')
@@ -195,7 +197,6 @@ else:
                 print('')
                 print(f"Sorry, {direction} Pick a direction to navigate!")
                 direction = ''
-
     else: 
         quit()
 
