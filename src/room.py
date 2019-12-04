@@ -4,4 +4,8 @@
 class Room:
     def __init__(self, name, description):
         self.name = name
-        self.description = description 
+        self.description = description
+         
+
+    # def __str__(self):
+    #     return f'Room: {self.name}, {self.description}'
