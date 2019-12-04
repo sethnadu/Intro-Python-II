@@ -98,7 +98,7 @@ else:
         # Outside navigation
         if player["bilbo"].current_room.name == room['outside'].name:
             if direction == "n":
-                player['bilbo'].current_room = room['foyer']
+                player['bilbo'].current_room = room['outside'].n_to
                 print('')
                 print(f"You have entered the {player['bilbo'].current_room.name} \n")
                 print(player['bilbo'].current_room.description, "\n")
@@ -114,17 +114,17 @@ else:
         # Foyer navigation
         elif player["bilbo"].current_room.name == room['foyer'].name:
             if direction == "n":
-                player['bilbo'].current_room = room['overlook']
+                player['bilbo'].current_room = room['foyer'].n_to
                 print('')
                 print(f"You entered the {player['bilbo'].current_room.name} \n")
                 print(player['bilbo'].current_room.description, "\n")
             elif direction == "s":
-                player['bilbo'].current_room = room['outside']
+                player['bilbo'].current_room = room['foyer'].s_to
                 print('')
                 print(f"You entered the {player['bilbo'].current_room.name} \n")
                 print(player['bilbo'].current_room.description, "\n")
             elif direction == "e":
-                player['bilbo'].current_room = room['narrow']
+                player['bilbo'].current_room = room['foyer'].e_to
                 print('')
                 print(f"You entered the {player['bilbo'].current_room.name} \n")
                 print(player['bilbo'].current_room.description, "\n")
@@ -140,12 +140,12 @@ else:
         # Narrow Navigation
         elif player["bilbo"].current_room.name == room['narrow'].name:
             if direction == "n":
-                player['bilbo'].current_room = room['treasure']
+                player['bilbo'].current_room = room['narrow'].n_to
                 print('')
                 print(f"You entered the {player['bilbo'].current_room.name} \n")
                 print(player['bilbo'].current_room.description, "\n")
             elif direction == "w":
-                player['bilbo'].current_room = room['foyer']
+                player['bilbo'].current_room = room['narrow'].w_to
                 print('')
                 print(f"You entered the {player['bilbo'].current_room.name} \n")
                 print(player['bilbo'].current_room.description, "\n")
@@ -165,7 +165,7 @@ else:
                 print(' ')
                 print(f"{player['bilbo'].name} will fall off the cliff! \n")
             elif direction == "s":
-                player['bilbo'].current_room = room['foyer']
+                player['bilbo'].current_room = room['overlook'].s_to
                 print('')
                 print(f"You entered the {player['bilbo'].current_room.name} \n")
                 print(player['bilbo'].current_room.description, "\n")
@@ -185,7 +185,7 @@ else:
                 print('')
                 print(f"{player['bilbo'].name} can not go that way! \n")
             elif direction == "s":
-                player['bilbo'].current_room = room['narrow']
+                player['bilbo'].current_room = room['treasure'].s_to
                 print('')
                 print(f"You entered the {player['bilbo'].current_room.name} \n")
                 print(player['bilbo'].current_room.description, "\n")
