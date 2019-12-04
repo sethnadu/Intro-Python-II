@@ -3,19 +3,40 @@ from player import Player
 from item import Item
 
 
+# Declare all Items
+item = {
+    "dagger": Item("Sting", "A magical Elvish knife or dagger"),
+    "ring": Item("The One Ring", "The One Ring to rule them all, crafted by the Dark Lord Sauron in Mount Doom, found in Gollum's Cave"),
+    "food": Item("Hobbit Hash", "Breakfast meal containing: potatoes, leeks, spinach, and cheese"),
+    "drink": Item("Beer", "A favorite among Hobbits"),
+    "pouch": Item("A Gold Pouch", "Filled with Gold!"),
+    "book": Item("There and Back Again", "It's not finished yet!"),
+    "pipe": Item("Pipe", "Used for smoking Gilly-weed or Tobacco"),
+    "walking-stick": Item("Gandalf's Staff", "Gandalf must have left it here, or is close by...")
+}
+
 # Declare all the rooms
 
 room = {
     'outside':  Room("Bag-End Entrance, Bilbo's House",
-                     "The round door is cracked ajar to the north, sweet smells are wofting out"),
+                    "The round door is cracked ajar to the north, sweet smells are wofting out",
+                    [item["pipe"]]),
 
-    'foyer':    Room("Kitchen", """Dim light filters in from the south. The source of the savory smells come from a wooden table. Small passages run north and east."""),
+    'foyer':    Room("Kitchen", 
+                    """Dim light filters in from the south. The source of the savory smells come from a wooden table. Small passages run north and east.""", 
+                    [item["food"], item["drink"]]),
 
-    'overlook': Room("Overlook", """ While under renovations, you can see out the side of the hill. Darkness falls below you, and you can see feint lights from the other dwellings in the distance. The small passageway you came from is the only way you can go."""),
+    'overlook': Room("Overlook", 
+                    """ While under renovations, you can see out the side of the hill. Darkness falls below you, and you can see feint lights from the other dwellings in the distance. The small passageway you came from is the only way you can go.""",
+                    [item["walking-stick"]]),
 
-    'narrow':   Room("Hallway", """The narrow passage bends here from west to north. The smell of gold permeates the air."""),
+    'narrow':   Room("Hallway", 
+                """The narrow passage bends here from west to north. The smell of gold permeates the air.""",
+                [item["pouch"]]),
 
-    'treasure': Room("Treasure Chamber", """You have entered into your treasure room. It is filled with items from your previous adventures. No other ways to continue through the house but back the way you came."""),
+    'treasure': Room("Treasure Chamber", 
+                """You have entered into your treasure room. It is filled with items from your previous adventures. No other ways to continue through the house but back the way you came."""
+                ,[item["dagger"], item["book"], item["ring"]]),
 }
 
 
@@ -34,21 +55,7 @@ room['treasure'].s_to = room['narrow']
 
 # Declare all Players
 
-player = {
-    "bilbo": Player("Bilbo Baggins", room['outside'])
-}
-
-# Declare all Items
-item = {
-    "dagger": Item("Sting", "A magical Elvish knife or dagger"),
-    "ring": Item("The One Ring", "The One Ring to rule them all, crafted by the Dark Lord Sauron in Mount Doom, found in Gollum's Cave"),
-    "food": Item("Hobbit Hash", "Breakfast meal containing: potatoes, leeks, spinach, and cheese"),
-    "drink": Item("Beer", "A favorite among Hobbits"),
-    "pouch": Item("A Gold Pouch", "Filled with Gold!"),
-    "book": Item("There and Back Again", "It's not finished yet!"),
-    "pipe": Item("Pipe", "Used for smoking Gilly-weed or Tobacco"),
-    "walking-stick": Item("Gandalf's Staff", "Gandalf must have left it here, or is close by...")
-}
+player = Player("Bilbo Baggins", room['outside'], [])
 
 
 # Write a loop that:
@@ -62,7 +69,7 @@ item = {
 #
 # If the user enters "q", quit the game.
 
-
+direction_array = ['n', 'e', 's', 'w']
 
 # Start of Game
 print('\n')
@@ -80,123 +87,67 @@ while start == None or not start == 'start':
         print("You can quit the game anytime by typing 'q'")
         print('-------------------------------------------')
         print('')
-        print(f"Welcome {player['bilbo'].name}, to the {player['bilbo'].current_room.name}")
-        print(player["bilbo"].current_room.description)
-        print('')
     elif start == 'q':
+        print("Goodbye!")
         quit()
     else:
         print('')
         print("Sorry, type 'start' to begin, or 'q' to quit")
         print('')
         direction = ''
-else:
-
-    ###### Navigation through rooms
-    while player['bilbo']:
-        direction = input("Where would you look to move (n/e/w/s)?  ")
-        print('********************************************')
+else:  
+    # Navigation 
+    while True:
         print('')
-        # Outside navigation
-        if player["bilbo"].current_room.name == room['outside'].name:
-            if direction == "n":
-                player['bilbo'].current_room = room['outside'].n_to
-                print('')
-                print(f"You have entered the {player['bilbo'].current_room.name} \n")
-                print(player['bilbo'].current_room.description, "\n")
-            elif direction == 's' or direction == 'w' or direction == 'e':
-                print('')
-                print(f"{player['bilbo'].name} can not go that way! \n")
-            elif direction == 'q': 
-                exit()
-            else:
-                print("Sorry, Pick a direction to navigate!")
-                direction = ''
+        print(f"{player.current_room.name}:")
+        print(player.current_room.description)
+        print('')
 
-        # Foyer navigation
-        elif player["bilbo"].current_room.name == room['foyer'].name:
-            if direction == "n":
-                player['bilbo'].current_room = room['foyer'].n_to
+        info = input("Would you like to continue on, or search around (search, continue)? ")
+        print('********************************************')
+        if info == "search":
+            print(f"{player.name} is searching...")
+            print('')
+            print(f"You found:")
+            # Display Items in current room
+            items_array = []
+            for item in player.current_room.items:
+                print(f'{item.name}: {item.description}')
+                items_array.append(item.name)
+            print('')
+            # Decide to add to inventory or move on
+            add = input("Add Top Item (yes, no)? ")
+            if add == 'yes':
+                for item in player.current_room.items:
+                    player.addItemToInventory(item)
+                    player.current_room.removeItemFromRoom(item)
+                print("Items have been added!")
+                print('-------------------------------------------')
                 print('')
-                print(f"You entered the {player['bilbo'].current_room.name} \n")
-                print(player['bilbo'].current_room.description, "\n")
-            elif direction == "s":
-                player['bilbo'].current_room = room['foyer'].s_to
+            elif add == 'no':
+                print("You left the items in the room")
+                print('-------------------------------------------')
                 print('')
-                print(f"You entered the {player['bilbo'].current_room.name} \n")
-                print(player['bilbo'].current_room.description, "\n")
-            elif direction == "e":
-                player['bilbo'].current_room = room['foyer'].e_to
-                print('')
-                print(f"You entered the {player['bilbo'].current_room.name} \n")
-                print(player['bilbo'].current_room.description, "\n")
-            elif direction == 'w':
-                print(f"{player['bilbo'].name} can not go that way! \n")
-            elif direction == 'q': 
-                exit()
             else:
+                print("Invalid key!")
                 print('')
-                print(f"Sorry, {direction} Pick a direction to navigate!")
-                direction = ''
-
-        # Narrow Navigation
-        elif player["bilbo"].current_room.name == room['narrow'].name:
-            if direction == "n":
-                player['bilbo'].current_room = room['narrow'].n_to
-                print('')
-                print(f"You entered the {player['bilbo'].current_room.name} \n")
-                print(player['bilbo'].current_room.description, "\n")
-            elif direction == "w":
-                player['bilbo'].current_room = room['narrow'].w_to
-                print('')
-                print(f"You entered the {player['bilbo'].current_room.name} \n")
-                print(player['bilbo'].current_room.description, "\n")
-            elif direction == "e" or direction == 's':
-                print('')
-                print(f"{player['bilbo'].name} can not go that way! \n")
-            elif direction == 'q': 
-                exit()
-            else:
-                print('')
-                print(f"Sorry, {direction} Pick a direction to navigate!")
-                direction = ''
-
-        # Overlook Navigation
-        elif player["bilbo"].current_room.name == room['overlook'].name:
-            if direction == "n":
-                print(' ')
-                print(f"{player['bilbo'].name} will fall down the hill! \n")
-            elif direction == "s":
-                player['bilbo'].current_room = room['overlook'].s_to
-                print('')
-                print(f"You entered the {player['bilbo'].current_room.name} \n")
-                print(player['bilbo'].current_room.description, "\n")
-            elif direction == "e" or direction == 'w':
-                print('')
-                print(f"{player['bilbo'].name} can not go that way! \n")
-            elif direction == 'q': 
-                exit()
-            else:
-                print('')
-                print(f"Sorry, {direction} Pick a direction to navigate!")
-                direction = ''
-
-        # Treasure Navigation
-        elif player["bilbo"].current_room.name == room['treasure'].name:
-            if direction == "e" or direction == 'w' or direction == 'n':
-                print('')
-                print(f"{player['bilbo'].name} can not go that way! \n")
-            elif direction == "s":
-                player['bilbo'].current_room = room['treasure'].s_to
-                print('')
-                print(f"You entered the {player['bilbo'].current_room.name} \n")
-                print(player['bilbo'].current_room.description, "\n")
-            elif direction == 'q': 
-                exit()
-            else:
-                print('')
-                print(f"Sorry, {direction} Pick a direction to navigate!")
-                direction = ''
-    else: 
-        quit()
+        elif info == 'q':
+            print('Goodbye!')
+            quit()
+        elif info == 'continue':
+            print("Moving on..")
+            direction = input("What direction would you like to move (n/e/w/s)?  ")
+            print('********************************************')
+            print('')
+            if direction in direction_array:
+                player.move(direction)
+            elif direction == 'q':
+                print(f"Thanks for playing {player.name}")
+                quit()
+            else: 
+                print(f"Sorry, '{direction}' is not a valid direction")
+        else:
+            print("Type in 'search', 'continue' or 'q' ")
+            print('********************************************')
+            print('')
 
