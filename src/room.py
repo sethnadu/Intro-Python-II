@@ -21,6 +21,7 @@ class Room:
             item_names.append(item.name)
         print('')
         add = input("Type 'Take' with item name to add to inventory, 'all' to add all items, 'no' leave items in room: ")
+        print('')
         player.findItem(add, player, item_names, items_array)
 
 

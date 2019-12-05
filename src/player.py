@@ -35,6 +35,7 @@ class Player:
         drop = input("Type 'Drop' with item name to drop item in room, 'exit' to exit inventory: ")
         print('********************************************')
         print('')
+        # Drop an Item/ Add to current Room
         drop_split = drop.split()
         item_only = ' '
         drop_item = item_only.join(drop_split[1:])
@@ -53,7 +54,7 @@ class Player:
         add_split = add.split()
         item_only = ' '
         add_item = item_only.join(add_split[1:])
-        # Add All Items
+        # Add All Items/ Remove all from current room
         if add == 'all':
                 for item in range(len(player.current_room.items)):
                     player.addItemToInventory(player.current_room.items[item])
@@ -61,7 +62,7 @@ class Player:
                 print("Items have been added!")
                 print('-------------------------------------------')
                 print('')
-        # Add specific item
+        # Add specific item/ Remove from current room
         elif add_split[0] == "Take" and add_item in item_names:
             for item in items_array:
                 if item.name == add_item:
@@ -69,15 +70,7 @@ class Player:
             print(f"{add_item} have been added!")
             print('-------------------------------------------')
             print('')
-        # Drop Specific Item
-        # elif add_split[0] == "Drop" and add_item in item_names:
-        #     for item in items_array:
-        #         if item.name == add_item:
-        #             item.on_drop(player, item, add_item)
-        #     print(f"{add_item} have been added!")
-        #     print('-------------------------------------------')
-        #     print('')
-        # Add no items
+        # Exit Search
         elif add == 'no':
             print(f"{player.name} stopped searching")
             print('-------------------------------------------')
