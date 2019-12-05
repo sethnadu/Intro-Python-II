@@ -20,8 +20,7 @@ class Room:
             items_array.append(item)
             item_names.append(item.name)
         print('')
-        add = input("Type in the name of the item you would wish you to add, or 'all' for all the items, 'no' to move on: ")
-        print('')
+        add = input("Type 'Take' with item name to add to inventory, 'all' to add all items, 'no' leave items in room: ")
         player.findItem(add, player, item_names, items_array)
 
 

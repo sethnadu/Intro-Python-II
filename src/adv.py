@@ -1,3 +1,4 @@
+from instructions import Instructions
 from room import Room
 from player import Player
 from item import Item
@@ -57,7 +58,7 @@ room['treasure'].s_to = room['narrow']
 
 player = Player("Bilbo Baggins", room['outside'], [])
 
-
+instruct = Instructions()
 # Write a loop that:
 #
 # * Prints the current room name
@@ -71,38 +72,26 @@ player = Player("Bilbo Baggins", room['outside'], [])
 
 direction_array = ['n', 'e', 's', 'w']
 
-# Start of Game
+########################## Start of Game ##########################
 print('\n')
 print("Welcome to the Hobbit Adventure Game \n")
 
 start = None
-# Directions to start the game
+direction = ''
+##### Directions to start the game #####
 while start == None or not start == 'start':
     start = input("Type 'start' to Start Your Adventure: ")
     print('********************************************')
     print('')
-    if start == "start":
-        print('-------------------------------------------')
-        print("Use the following keys to navigate: \n'n' for north, \n'e' for east, \n's' for south, \n'w' for west \n")
-        print("You can quit the game anytime by typing 'q'")
-        print('-------------------------------------------')
-        print('')
-    elif start == 'q':
-        print("Goodbye!")
-        quit()
-    else:
-        print('')
-        print("Sorry, type 'start' to begin, or 'q' to quit")
-        print('')
-        direction = ''
+    instruct.getInfo(start)
 else:  
-    # MAIN 
+    ######################## MAIN ########################
     while True:
         print('')
         print(f"{player.current_room.name}:")
         print(player.current_room.description)
         print('')
-        info = input("Would you like to continue on, or search around (search, continue)? ")
+        info = input("Would you like to continue on, search around (search, continue) [i, q] ? ")
         print('********************************************')
         if info == "search" and len(player.current_room.items) > 0:
             print(f"{player.name} is searching...")
@@ -120,21 +109,32 @@ else:
         elif info == 'q':
             print('Goodbye!')
             quit()
+        elif info == 'i':
+            print('')
+            print("Inventory:")
+            print('')
+            player.getInventoryAndDrop(player)
+            
         elif info == 'continue':
             ######### Navigate to different Rooms
             print("Moving on..")
-            direction = input("What direction would you like to move (n/e/w/s)?  ")
+            direction = input("What direction would you like to move (n/e/w/s) [q/i]?  ")
             print('********************************************')
             print('')
             if direction in direction_array:
                 player.move(direction)
+            elif direction == 'i':
+                print('')
+                print("Inventory:")
+                print('')
+                player.getInventoryAndDrop(player)
             elif direction == 'q':
                 print(f"Thanks for playing {player.name}")
                 quit()
             else: 
                 print(f"Sorry, '{direction}' is not a valid direction")
         else:
-            print("Type in 'search', 'continue' or 'q' ")
+            print("Type in 'search', 'continue', 'q' for quit, 'i' for inventory ")
             print('********************************************')
             print('')
 
