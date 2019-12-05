@@ -96,45 +96,67 @@ while start == None or not start == 'start':
         print('')
         direction = ''
 else:  
-    # Navigation 
+    # MAIN 
     while True:
         print('')
         print(f"{player.current_room.name}:")
         print(player.current_room.description)
         print('')
-
         info = input("Would you like to continue on, or search around (search, continue)? ")
         print('********************************************')
-        if info == "search":
+        if info == "search" and len(player.current_room.items) > 0:
             print(f"{player.name} is searching...")
             print('')
             print(f"You found:")
-            # Display Items in current room
+            ####### Display Items in current room
+
+            # MOVE TO item.py
             items_array = []
+            item_names = []
             for item in player.current_room.items:
                 print(f'{item.name}: {item.description}')
-                items_array.append(item.name)
+                items_array.append(item)
+                item_names.append(item.name)
             print('')
-            # Decide to add to inventory or move on
-            add = input("Add Top Item (yes, no)? ")
-            if add == 'yes':
-                for item in player.current_room.items:
-                    player.addItemToInventory(item)
-                    player.current_room.removeItemFromRoom(item)
+            #Finish move
+
+            ####### Decide to add to inventory or move on
+            add = input("Type in the name of the item you would wish you to add, or 'all' for all the items, 'no' to move on: ")
+
+            #Move to player.py
+            if add == 'all':
+                for item in range(len(player.current_room.items)):
+                    player.addItemToInventory(player.current_room.items[item])
+                player.current_room.items.clear()
                 print("Items have been added!")
                 print('-------------------------------------------')
                 print('')
+            elif add in item_names:
+                for item in items_array:
+                    if item.name == add:
+                        player.addItemToInventory(add)
+                        player.current_room.removeItemFromRoom(item)
+                print(f"{add} have been added!")
+                print('-------------------------------------------')
+                print('')
+                # player.current_room.removeItemFromRoom(add)
             elif add == 'no':
-                print("You left the items in the room")
+                print(f"{player.name} stopped searching")
                 print('-------------------------------------------')
                 print('')
             else:
                 print("Invalid key!")
                 print('')
+            #Finish Move
+        elif info == 'search' and len(player.current_room.items) < 1:
+            print(f"{player.name} is searching...")
+            print('')
+            print(f"You found no items!")
         elif info == 'q':
             print('Goodbye!')
             quit()
         elif info == 'continue':
+            ######### Navigate to different Rooms
             print("Moving on..")
             direction = input("What direction would you like to move (n/e/w/s)?  ")
             print('********************************************')
