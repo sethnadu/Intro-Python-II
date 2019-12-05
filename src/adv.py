@@ -136,6 +136,8 @@ else:
             elif direction == 'q':
                 print(f"Thanks for playing {player.name}")
                 quit()
+            elif direction == '':
+                print("Invalid key!")
             else: 
                 print(f"Sorry, '{direction}' is not a valid direction")
         else:

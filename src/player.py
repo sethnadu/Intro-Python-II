@@ -39,15 +39,18 @@ class Player:
         drop_split = drop.split()
         item_only = ' '
         drop_item = item_only.join(drop_split[1:])
-        if drop_split[0] == "Drop" and drop_item in item_names:
-            for item in item_objects:
-                if item.name == drop_item:
-                    item.on_drop(player, item)
-            print(f"{item.name} have been dropped to {player.current_room.name}!")
-            print('-------------------------------------------')
-            print('')
-        elif drop == 'exit': 
-            print("You have left your Inventory")
+        if drop is not '':
+            if drop_split[0] == "Drop" and drop_item in item_names:
+                for item in item_objects:
+                    if item.name == drop_item:
+                        item.on_drop(player, item)
+                print(f"{item.name} have been dropped to {player.current_room.name}!")
+                print('-------------------------------------------')
+                print('')
+            elif drop == 'exit': 
+                print("You have left your Inventory")
+        else:
+            print("Invalid Key!")
 
     def findItem(self, add, player, item_names, items_array):
         add_split = add.split()
@@ -70,7 +73,7 @@ class Player:
             print('-------------------------------------------')
             print('')
         # Exit Search
-        elif add == 'no':
+        elif add == 'exit':
             print(f"{player.name} stopped searching")
             print('-------------------------------------------')
             print('')

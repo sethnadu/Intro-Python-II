@@ -20,9 +20,13 @@ class Room:
             items_array.append(item)
             item_names.append(item.name)
         print('')
-        add = input("Type 'Take' with item name to add to inventory, 'all' to add all items, 'no' leave items in room: ")
+        add = input("Type 'Take' with item name to add to inventory, 'all' to add all items or 'exit' stop searching: ")
+        print('********************************************')
         print('')
-        player.findItem(add, player, item_names, items_array)
+        if add is not '':
+            player.findItem(add, player, item_names, items_array)
+        else: 
+            print("Invalid key!")
 
 
     def addItemToRoom(self, item):
