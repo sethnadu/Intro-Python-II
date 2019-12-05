@@ -109,45 +109,10 @@ else:
             print('')
             print(f"You found:")
             ####### Display Items in current room
-
-            # MOVE TO item.py
             items_array = []
             item_names = []
-            for item in player.current_room.items:
-                print(f'{item.name}: {item.description}')
-                items_array.append(item)
-                item_names.append(item.name)
-            print('')
-            #Finish move
-
             ####### Decide to add to inventory or move on
-            add = input("Type in the name of the item you would wish you to add, or 'all' for all the items, 'no' to move on: ")
-
-            #Move to player.py
-            if add == 'all':
-                for item in range(len(player.current_room.items)):
-                    player.addItemToInventory(player.current_room.items[item])
-                player.current_room.items.clear()
-                print("Items have been added!")
-                print('-------------------------------------------')
-                print('')
-            elif add in item_names:
-                for item in items_array:
-                    if item.name == add:
-                        player.addItemToInventory(add)
-                        player.current_room.removeItemFromRoom(item)
-                print(f"{add} have been added!")
-                print('-------------------------------------------')
-                print('')
-                # player.current_room.removeItemFromRoom(add)
-            elif add == 'no':
-                print(f"{player.name} stopped searching")
-                print('-------------------------------------------')
-                print('')
-            else:
-                print("Invalid key!")
-                print('')
-            #Finish Move
+            player.current_room.getItemsInRoom(player, items_array, item_names)
         elif info == 'search' and len(player.current_room.items) < 1:
             print(f"{player.name} is searching...")
             print('')

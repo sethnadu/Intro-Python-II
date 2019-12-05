@@ -19,6 +19,30 @@ class Player:
         else: 
           self.current_room = getattr(self.current_room, f"{direction}_to")  
 
+    def findItem(self, add, player, item_names, items_array):
+        if add == 'all':
+                for item in range(len(player.current_room.items)):
+                    player.addItemToInventory(player.current_room.items[item])
+                player.current_room.items.clear()
+                print("Items have been added!")
+                print('-------------------------------------------')
+                print('')
+        elif add in item_names:
+            for item in items_array:
+                if item.name == add:
+                    player.addItemToInventory(add)
+                    player.current_room.removeItemFromRoom(item)
+            print(f"{add} have been added!")
+            print('-------------------------------------------')
+            print('')
+            # player.current_room.removeItemFromRoom(add)
+        elif add == 'no':
+            print(f"{player.name} stopped searching")
+            print('-------------------------------------------')
+            print('')
+        else:
+            print("Invalid key!")
+            print('')
 
     def getInventory(self):
         return self.inventory
