@@ -42,11 +42,10 @@ class Player:
         if drop_split[0] == "Drop" and drop_item in item_names:
             for item in item_objects:
                 if item.name == drop_item:
-                    print(item)
                     item.on_drop(player, item)
-                print(f"{item.name} have been dropped to {player.current_room.name}!")
-                print('-------------------------------------------')
-                print('')
+            print(f"{item.name} have been dropped to {player.current_room.name}!")
+            print('-------------------------------------------')
+            print('')
         elif drop == 'exit': 
             print("You have left your Inventory")
 
@@ -78,8 +77,6 @@ class Player:
         else:
             print("Invalid key!")
             print('')
-
-
 
     def addItemToInventory(self, item):
         self.inventory.append(item)

@@ -13,11 +13,11 @@ item = {
     "pouch": Item("A Gold Pouch", "Filled with Gold!"),
     "book": Item("There and Back Again", "It's not finished yet!"),
     "pipe": Item("Pipe", "Used for smoking Gilly-weed or Tobacco"),
-    "walking-stick": Item("Gandalf's Staff", "Gandalf must have left it here, or is close by...")
+    "walking-stick": Item("Gandalf's Staff", "Gandalf must have left it here, or is close by..."),
+    "gilly-weed": Item("Gilly-weed", "Used to relax, need a pipe to smoke it")
 }
 
 # Declare all the rooms
-
 room = {
     'outside':  Room("Bag-End Entrance, Bilbo's House",
                     "The round door is cracked ajar to the north, sweet smells are wofting out",
@@ -42,7 +42,6 @@ room = {
 
 
 # Link rooms together
-
 room['outside'].n_to = room['foyer']
 room['foyer'].s_to = room['outside']
 room['foyer'].n_to = room['overlook']
@@ -52,13 +51,13 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
-
-
 # Declare all Players
+player = Player("Bilbo Baggins", room['outside'], [item["gilly-weed"]])
 
-player = Player("Bilbo Baggins", room['outside'], [])
-
+# Declare Instructions
 instruct = Instructions()
+
+
 # Write a loop that:
 #
 # * Prints the current room name
@@ -70,7 +69,8 @@ instruct = Instructions()
 #
 # If the user enters "q", quit the game.
 
-direction_array = ['n', 'e', 's', 'w']
+
+
 
 ########################## Start of Game ##########################
 print('\n')
@@ -78,6 +78,7 @@ print("Welcome to the Hobbit Adventure Game \n")
 
 start = None
 direction = ''
+direction_array = ['n', 'e', 's', 'w']
 ##### Directions to start the game #####
 while start == None or not start == 'start':
     start = input("Type 'start' to Start Your Adventure: ")
@@ -91,43 +92,47 @@ else:
         print(f"{player.current_room.name}:")
         print(player.current_room.description)
         print('')
-        info = input("Would you like to continue on, search around (search, continue) [i, q] ? ")
+        info = input("Would you like to continue on or search around (search, continue) [i, q] ? ")
         print('********************************************')
+        # Display Items in current room and to Add to Inventory/Remove from room 
         if info == "search" and len(player.current_room.items) > 0:
             print(f"{player.name} is searching...")
             print('')
             print(f"You found:")
-            ####### Display Items in current room
             items_array = []
             item_names = []
-            ####### Decide to add to inventory or move on
             player.current_room.getItemsInRoom(player, items_array, item_names)
+        # Display No Item is no items are found in room
         elif info == 'search' and len(player.current_room.items) < 1:
             print(f"{player.name} is searching...")
             print('')
             print(f"You found no items!")
+        # Quit the game
         elif info == 'q':
             print('Goodbye!')
             quit()
+        # Check inventory
         elif info == 'i':
             print('')
             print("Inventory:")
             print('')
             player.getInventoryAndDrop(player)
-            
+        # Navigation
         elif info == 'continue':
-            ######### Navigate to different Rooms
             print("Moving on..")
             direction = input("What direction would you like to move (n/e/w/s) [q/i]?  ")
             print('********************************************')
             print('')
+            # Navigate to different Rooms
             if direction in direction_array:
                 player.move(direction)
+            # Check Inventory
             elif direction == 'i':
                 print('')
                 print("Inventory:")
                 print('')
                 player.getInventoryAndDrop(player)
+            # Quit the Game
             elif direction == 'q':
                 print(f"Thanks for playing {player.name}")
                 quit()
