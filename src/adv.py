@@ -1,19 +1,21 @@
 from instructions import Instructions
 from room import Room
-from player import Player
-from item import Item
+from player import Main, Enemy
+from item import Item, Weapon
 
 
 # Declare all Items
 item = {
-    "dagger": Item("Sting", "A magical Elvish knife or dagger"),
+    "sting": Weapon("Sting", "A magical Elvish knife or dagger", 10, 25),
+    "stick": Weapon("Oak Stick", "A broken branch from an Oak Tree", 6, 12),
+    "machete": Weapon("Hooked Machete", "A long machete with a sharp hook on the end", 7, 10),
     "ring": Item("The One Ring", "The One Ring to rule them all, crafted by the Dark Lord Sauron in Mount Doom, found in Gollum's Cave"),
-    "food": Item("Hobbit Hash", "Breakfast meal containing: potatoes, leeks, spinach, and cheese"),
+    "food": Item("Hobbit Hash", "Breakfast meal containing potatoes, leeks, spinach, and cheese"),
     "drink": Item("Beer", "A favorite among Hobbits"),
     "pouch": Item("A Gold Pouch", "Filled with Gold!"),
     "book": Item("There and Back Again", "It's not finished yet!"),
     "pipe": Item("Pipe", "Used for smoking Gilly-weed or Tobacco"),
-    "walking-stick": Item("Gandalf's Staff", "Gandalf must have left it here, or is close by..."),
+    "walking-stick": Weapon("Gandalf's Staff", "Gandalf must have left it here, or is close by...", 10, 18),
     "gilly-weed": Item("Gilly-weed", "Used to relax, need a pipe to smoke it")
 }
 
@@ -37,7 +39,8 @@ room = {
 
     'treasure': Room("Treasure Chamber", 
                 """You have entered into your treasure room. It is filled with items from your previous adventures. No other ways to continue through the house but back the way you came."""
-                ,[item["dagger"], item["book"], item["ring"]]),
+                ,[item["sting"], item["book"], item["ring"]]),
+    'dead': Room("Hell", "Enemies go here when they die", [])
 }
 
 
@@ -52,7 +55,15 @@ room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
 # Declare all Players
-player = Player("Bilbo Baggins", room['outside'], [item["gilly-weed"]])
+player = Main("Bilbo Baggins", room['outside'], [item["gilly-weed"], item["stick"]], 100)
+orc = Enemy("Uruk Hai", room['foyer'], [item["machete"]], 45)
+
+enemies = [
+    orc
+]
+
+
+
 
 # Declare Instructions
 instruct = Instructions()
@@ -85,23 +96,25 @@ while start == None or not start == 'start':
     print('********************************************')
     print('')
     instruct.getInfo(start)
+    print('')
+    print(f'Welcome {player.name}!')
+    print('')
 else:  
     ######################## MAIN ########################
     while True:
         print('')
+        player.current_room.checkEnemies(enemies, player, room["outside"], room["dead"])
         print(f"{player.current_room.name}:")
         print(player.current_room.description)
         print('')
-        info = input("Would you like to continue on or search around (search, continue) [i, q] ? ")
+        info = input("Would you like to continue on or search around (search, continue) [i, q] ?: ")
         print('********************************************')
         # Display Items in current room and to Add to Inventory/Remove from room 
         if info == "search" and len(player.current_room.items) > 0:
             print(f"{player.name} is searching...")
             print('')
             print(f"You found:")
-            items_array = []
-            item_names = []
-            player.current_room.getItemsInRoom(player, items_array, item_names)
+            player.current_room.getItemsInRoom(player)
         # Display No Item is no items are found in room
         elif info == 'search' and len(player.current_room.items) < 1:
             print(f"{player.name} is searching...")
@@ -113,14 +126,16 @@ else:
             quit()
         # Check inventory
         elif info == 'i':
+            player.getInventory(player)
             print('')
-            print("Inventory:")
+            drop = input("Type 'Drop' with item name to drop item in room, 'exit' to exit inventory: ")
+            print('********************************************')
             print('')
-            player.getInventoryAndDrop(player)
+            player.dropFromInventory(drop, player)
         # Navigation
         elif info == 'continue':
             print("Moving on..")
-            direction = input("What direction would you like to move (n/e/w/s) [q/i]?  ")
+            direction = input("What direction would you like to move (n/e/w/s) [q/i]?: ")
             print('********************************************')
             print('')
             # Navigate to different Rooms
@@ -128,10 +143,12 @@ else:
                 player.move(direction)
             # Check Inventory
             elif direction == 'i':
+                player.getInventory(player)
                 print('')
-                print("Inventory:")
+                drop = input("Type 'Drop' with item name to drop item in room, 'exit' to exit inventory: ")
+                print('********************************************')
                 print('')
-                player.getInventoryAndDrop(player)
+                player.dropFromInventory(drop, player)
             # Quit the Game
             elif direction == 'q':
                 print(f"Thanks for playing {player.name}")
@@ -140,8 +157,8 @@ else:
                 print("Invalid key!")
             else: 
                 print(f"Sorry, '{direction}' is not a valid direction")
-        else:
-            print("Type in 'search', 'continue', 'q' for quit, 'i' for inventory ")
-            print('********************************************')
-            print('')
+    else:
+        print("Type in 'search', 'continue', 'q' for quit, 'i' for inventory ")
+        print('********************************************')
+        print('')
 
