@@ -17,4 +17,12 @@ class Weapon(Item):
         self.minDamage = minDamage
         self.maxDamage = maxDamage
 
-        
+class Food(Item):
+    def __init__(self, name, description, energy):
+        super().__init__(name, description)
+        self.energy = energy
+
+class Bed(Item):
+    def __init__(self, name, description, uses):
+        super().__init__(name, description)
+        self.uses = uses

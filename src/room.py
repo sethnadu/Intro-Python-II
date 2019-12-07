@@ -14,7 +14,10 @@ class Room:
 
     def getItemsInRoom(self, player):
         for item in player.current_room.items:
-            print(f'{item.name}: {item.description}')
+            if isinstance(item, Weapon):
+                print(f'{item.name}[{item.minDamage},{item.maxDamage}]: {item.description}')
+            else:
+                print(f'{item.name}: {item.description}')
         print('')
         add = input("Type 'Take' with item name to add to inventory, 'all' to add all items or 'exit' stop searching: ")
         print('********************************************')
@@ -31,40 +34,62 @@ class Room:
     def removeItemFromRoom(self, item):
         self.items.remove(item)
 
+    def continueOn(self, player):
+        direction_array = ['n', 'e', 's', 'w']
+        print("Moving on..")
+        direction = input("What direction would you like to move (n/e/w/s) [q/i]?: ")
+        print('********************************************')
+        print('')
+        # Navigate to different Rooms
+        if direction in direction_array:
+            player.move(direction)
+        # Check Inventory
+        elif direction == 'i':
+            player.getInventory(player)
+            print('')
+            drop = input("Type 'Drop', 'Consume', or 'Sleep' followed by item name to drop it, consume it, or use to sleep. Type 'exit' to exit inventory: ")
+            print('********************************************')
+            print('')
+            player.dropFromInventoryOrEat(drop, player)
+        # Quit the Game
+        elif direction == 'q':
+            print(f"Thanks for playing {player.name}")
+            quit()
+        elif direction == '':
+            print("Invalid key!")
+        else: 
+            print(f"Sorry, '{direction}' is not a valid direction")
+
+
     def checkEnemies(self, enemies, player, player_death_room, enemy_death_room):
+        weapons = []
+        for item in player.inventory:
+            if isinstance(item, Weapon):
+                weapons.append(item)
         for enemy in enemies:
-            while player.current_room == enemy.current_room:
+            if player.current_room == enemy.current_room:
+                print('')
                 print(f"{enemy.name} is in the room!")
                 print('')
                 battle = input("Do you fight, or run (fight, run)[i, q]?: ")
                 print('********************************************')
                 print('')
                 if battle == 'fight':
-                    for item in player.inventory:
-                        if isinstance(item, Weapon):
-                            weapons = []
-                            weapons.append(item)
-                            if len(weapons) == 1:
-                                print(f"You attack the {enemy.name} with {weapons[0].name}")
-                                if enemy.health != 0 and enemy.health > 0 or player.health != 0 and enemy.health > 0:
-                                    player.attack(weapons[0], enemy)
-                                else:
-                                    if enemy.health == 0 or enemy.health < 0:
-                                        print('')
-                                        print(f"{player.name} has defeated {enemy.name}")
-                                        print('')
-                                        enemy.current_room = enemy_death_room
-                                        player.current_room.items.append(enemy.inventory[0])
-                                        print(enemy.inventory[0])
-                                    elif player.health == 0 or player.health < 0:
-                                        print("")
-                                        print(f"{player.name} was defeated by {enemy.name}")
-                                        print("")
-                                        player.current_room = player_death_room
-                            elif len(weapons) > 1:
-                                print("Available weapons:")
-                                for weapon in weapons:
-                                    print(weapon.name)
-                                pick = input("Which weapon do you wish to attack with?")    
-                            else: 
-                                print("You don't have a weapon!")
+                    print("Available weapons:")
+                    for weapon in weapons:
+                        print(f"{weapon.name}:[{weapon.minDamage}, {weapon.maxDamage}]")    
+                    print('')
+                    pick = input("Which weapon do you wish to attack with?: ")
+                    print('********************************************')
+                    print('')
+                    while player.current_room == enemy.current_room:
+                        for weapon in weapons:
+                            if pick == weapon.name:
+                                print(f"{player.name} attacked the {enemy.name} with {weapon.name}:[{weapon.minDamage}, {weapon.maxDamage}]")
+                                player.attackProgress(player, enemy, weapon, player_death_room, enemy_death_room)
+                    if len(weapons) == 0: 
+                        print("You don't have a weapon!")
+                        print(f"{player.name} runs away!")
+                        player.current_room.continueOn(player)
+                elif battle == "run":
+                    player.current_room.continueOn(player)
